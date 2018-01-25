@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Text } from 'react-native';
 import { WingBlank } from 'antd-mobile';
-import styles from './styles';
 
 class Home extends Component {
   static navigationOptions = {
-    title: 'Home'
+    title: 'Home',
   };
 
   render() {
