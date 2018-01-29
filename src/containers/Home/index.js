@@ -2,7 +2,9 @@ import React, { Component } from 'react';
 import { Text } from 'react-native';
 import { WingBlank } from 'antd-mobile';
 
-class Home extends Component {
+type Props = {};
+
+class Home extends Component<Props> {
   static navigationOptions = {
     title: 'Home',
   };

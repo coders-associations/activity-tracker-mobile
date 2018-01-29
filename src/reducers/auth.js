@@ -1,26 +1,32 @@
+import type { Action } from '.';
+
 const LOGIN = 'AUTH/LOGIN';
 const LOGOUT = 'AUTH/LOGOUT';
+
+type State = {
+  logged: boolean;
+};
 
 const initialState = {
   logged: false,
 };
 
-export default (state = initialState, action) => {
+export default (state: State = initialState, action: Action) => {
   switch (action.type) {
-      case LOGIN:
-        return {
-          ...state,
-          logged: true,
-        };
+    case LOGIN:
+      return {
+        ...state,
+        logged: true,
+      };
 
-      case LOGOUT:
-        return {
-          ...state,
-          logged: false,
-        };
+    case LOGOUT:
+      return {
+        ...state,
+        logged: false,
+      };
 
-      default:
-        return state;
+    default:
+      return state;
   }
 };
 

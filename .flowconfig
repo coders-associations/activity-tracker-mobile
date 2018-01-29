@@ -21,6 +21,7 @@
 
 ; Ignore all third party modules
 .*/node_modules/.*
+.*/__tests__/.*
 
 [include]
 
