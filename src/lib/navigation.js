@@ -11,6 +11,4 @@ const resetNavigation = (nextScreen: string, navigation: Object) => {
   navigation.dispatch(resetAction);
 };
 
-export {
-  resetNavigation,
-};
+export default resetNavigation;

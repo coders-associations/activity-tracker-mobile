@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { View } from 'react-native';
 import { ActivityIndicator } from 'antd-mobile';
-import { resetNavigation } from '../../lib/navigation';
+import resetNavigation from '../../lib/navigation';
 import styles from './styles';
 
 type Props = {
@@ -16,7 +16,7 @@ class Loader extends Component<Props> {
   };
 
   componentWillMount() {
-    setTimeout(() => this.navigate(), 2000);
+    setTimeout(() => this.navigate(), 1000);
   }
 
   navigate() {
@@ -37,7 +37,7 @@ class Loader extends Component<Props> {
   }
 }
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = () => ({});
 const mapStateToProps = state => ({
   logged: state.auth.logged,
 });

@@ -2,13 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { View, Text } from 'react-native';
 import { InputItem, Button } from 'antd-mobile';
+import { setToken, login } from '../../../reducers/auth';
 import AuthService from '../../../services/auth-service';
 import { Container } from '../../../components';
-import { resetNavigation } from '../../../lib/navigation';
+import resetNavigation from '../../../lib/navigation';
 import styles from './styles';
 
 type Props = {
   navigation: any,
+  setToken: any,
   login: any,
 };
 
@@ -37,20 +39,18 @@ class AuthSignIn extends Component<Props, State> {
   }
 
   onSubmit() {
-    const { navigate } = this.props.navigation;
     const { email, password } = this.state;
 
     this.setState({ loading: true });
 
     AuthService
       .signIn(email, password)
-      .then(() => {
-        // this.props.login();
+      .then((res) => {
+        this.props.setToken({ token: res.data.token });
+        this.props.login();
         resetNavigation('Home', this.props.navigation);
       }, () => {
         // TODO Handle API errors
-        // this.props.login();
-        resetNavigation('Home', this.props.navigation);
       })
       .finally(() => {
         this.setState({ loading: false });
@@ -86,7 +86,7 @@ class AuthSignIn extends Component<Props, State> {
             placeholder="Password"
             value={password}
             autoCorrect={false}
-            secureTextEntry
+            type="password"
             autoCapitalize="none"
             onChange={value => this.onChange('password', value)}
           />
@@ -116,9 +116,10 @@ class AuthSignIn extends Component<Props, State> {
 }
 
 const mapDispatchToProps = dispatch => ({
+  setToken: token => dispatch(setToken(token)),
   login: () => dispatch(login()),
 });
 
-const mapStateToProps = state => ({});
+const mapStateToProps = () => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthSignIn);

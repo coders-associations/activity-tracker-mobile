@@ -1,16 +1,16 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import configureStore from './reducers';
+import { PersistGate } from 'redux-persist/lib/integration/react';
+import configureStore from './lib/configureStore';
 import { Router } from './components';
 
-declare var GLOBAL;
-GLOBAL.XMLHttpRequest = GLOBAL.originalXMLHttpRequest || GLOBAL.XMLHttpRequest;
-
-const store = configureStore();
+const { store, persistor } = configureStore();
 
 const App = () => (
   <Provider store={store}>
-    <Router />
+    <PersistGate loading={null} persistor={persistor}>
+      <Router />
+    </PersistGate>
   </Provider>
 );
 

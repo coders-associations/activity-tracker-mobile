@@ -1,15 +1,15 @@
-import axios from '../lib/axios';
+import { axiosClient } from '../lib/axios';
 
 class AuthService {
   signIn(email: string, password: string) {
-    return axios.post('/users/login', {
+    return axiosClient.post('/auth', {
       email,
       password,
     });
   }
 
   signUp(email: string, password: string) {
-    return axios.post('/users', {
+    return axiosClient.post('/users', {
       email,
       password,
     });

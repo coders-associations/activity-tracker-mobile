@@ -53,7 +53,6 @@ class AuthSignUp extends Component<Props, State> {
         this.setState({ modal: true });
       }, () => {
         // TODO Handle API errors
-        this.setState({ modal: true });
       })
       .finally(() => {
         this.setState({ loading: false });
@@ -85,7 +84,7 @@ class AuthSignUp extends Component<Props, State> {
             placeholder="Password"
             value={password}
             autoCorrect={false}
-            secureTextEntry
+            type="password"
             autoCapitalize="none"
             onChange={value => this.onChange('password', value)}
           />
@@ -127,7 +126,7 @@ class AuthSignUp extends Component<Props, State> {
   }
 }
 
-const mapDispatchToProps = dispatch => ({});
-const mapStateToProps = state => ({});
+const mapDispatchToProps = () => ({});
+const mapStateToProps = () => ({});
 
 export default connect(mapStateToProps, mapDispatchToProps)(AuthSignUp);

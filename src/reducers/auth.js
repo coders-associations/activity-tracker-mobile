@@ -2,13 +2,16 @@ import type { Action } from '.';
 
 const LOGIN = 'AUTH/LOGIN';
 const LOGOUT = 'AUTH/LOGOUT';
+const SET_TOKEN = 'AUTH/SET_TOKEN';
 
 type State = {
-  logged: boolean;
+  logged: boolean,
+  token: string,
 };
 
 const initialState = {
   logged: false,
+  token: '',
 };
 
 export default (state: State = initialState, action: Action) => {
@@ -25,6 +28,12 @@ export default (state: State = initialState, action: Action) => {
         logged: false,
       };
 
+    case SET_TOKEN:
+      return {
+        ...state,
+        token: action.payload.token,
+      };
+
     default:
       return state;
   }
@@ -32,3 +41,4 @@ export default (state: State = initialState, action: Action) => {
 
 export const login = () => ({ type: LOGIN });
 export const logout = () => ({ type: LOGOUT });
+export const setToken = (payload: Object) => ({ type: SET_TOKEN, payload });

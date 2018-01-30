@@ -1,0 +1,26 @@
+import { createStore } from 'redux';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import devToolsEnhancer from 'remote-redux-devtools';
+import rootReducer from '../reducers';
+
+const persistConfig = {
+  key: 'root',
+  storage,
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+export default () => {
+  const store = createStore(
+    persistedReducer,
+    devToolsEnhancer({ realtime: true }),
+  );
+
+  const persistor = persistStore(store);
+
+  return {
+    store,
+    persistor,
+  };
+};

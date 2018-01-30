@@ -1,12 +1,22 @@
 import axios from 'axios';
+// import { store } from '../reducers';
+
+const apiUrl = 'http://localhost:3000';
+
+// const { token } = store.getState().auth;
 
 const axiosClient = axios.create({
-  // baseURL: 'http://10.254.252.229:3000',
-  baseURL: 'https://api.google.com/',
+  baseURL: apiUrl,
+});
+
+const axiosClientAuthenticated = axios.create({
+  baseURL: apiUrl,
   headers: {
-    Accept: 'application/json',
-    ContentType: 'application/json',
+    // 'Authorization': `Bearer ${token}`,
   },
 });
 
-export default axiosClient;
+export {
+  axiosClient,
+  axiosClientAuthenticated,
+};
