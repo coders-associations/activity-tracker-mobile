@@ -6,6 +6,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  loaderOffline: {
+    alignItems: 'center',
+  },
+  loaderOfflineTitle: {
+    fontSize: 16,
+  },
+  loaderOfflineSubtitle: {
+    marginTop: 4,
+  },
 });
 
 export default styles;

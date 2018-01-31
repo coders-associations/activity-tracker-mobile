@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View } from 'react-native';
+import { View, Text, NetInfo } from 'react-native';
 import { ActivityIndicator } from 'antd-mobile';
 import resetNavigation from '../../lib/navigation';
 import styles from './styles';
@@ -10,28 +10,61 @@ type Props = {
   logged: boolean,
 };
 
-class Loader extends Component<Props> {
+type State = {
+  isOffline: boolean,
+};
+
+class Loader extends Component<Props, State> {
   static navigationOptions = {
     header: null,
   };
 
-  componentWillMount() {
-    setTimeout(() => this.navigate(), 1000);
+  state = {
+    isOffline: false,
+  }
+
+  componentDidMount() {
+    NetInfo.isConnected.fetch().then().done(() => {
+      NetInfo.isConnected.addEventListener('connectionChange', isConnected => this.dispatchConnected(isConnected));
+    });
+  }
+
+  dispatchConnected(isConnected) {
+    this.setState({ isOffline: isConnected });
+    this.navigate();
   }
 
   navigate() {
     const screen = this.props.logged ? 'Home' : 'AuthSignIn';
 
-    resetNavigation(screen, this.props.navigation);
+    if (!this.state.isOffline) {
+      resetNavigation(screen, this.props.navigation);
+    }
   }
 
   render() {
+    const { isOffline } = this.state;
+
     return (
       <View style={styles.loader}>
-        <ActivityIndicator
-          animating
-          size="large"
-        />
+        {!isOffline && (
+          <ActivityIndicator
+            animating
+            size="large"
+          />
+        )}
+
+        {isOffline && (
+          <View style={styles.loaderOffline}>
+            <Text style={styles.loaderOfflineTitle}>
+              You are offline
+            </Text>
+
+            <Text style={styles.loaderOfflineSubtitle}>
+              Please turn on internet connection
+            </Text>
+          </View>
+        )}
       </View>
     );
   }
