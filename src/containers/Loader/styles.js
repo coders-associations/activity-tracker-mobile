@@ -6,14 +6,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  loaderOffline: {
-    alignItems: 'center',
-  },
-  loaderOfflineTitle: {
+  loaderMessage: {
     fontSize: 16,
+    textAlign: 'center',
   },
-  loaderOfflineSubtitle: {
+  loaderMessageInfo: {
     marginTop: 4,
+    textAlign: 'center',
   },
 });
 

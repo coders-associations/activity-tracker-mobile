@@ -1,17 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { View, Text, NetInfo } from 'react-native';
+import { View, Text } from 'react-native';
 import { ActivityIndicator } from 'antd-mobile';
+import { enableNetworkStatus, disableNetworkStatus, enableApiStatus, disableApiStatus } from '../../reducers/app';
+import AppService from '../../services/app-service';
 import resetNavigation from '../../lib/navigation';
 import styles from './styles';
 
 type Props = {
   navigation: any,
   logged: boolean,
+  networkStatus: boolean,
+  apiStatus: boolean,
+  enableNetworkStatus: any,
+  disableNetworkStatus: any,
+  enableApiStatus: any,
+  disableApiStatus: any,
 };
 
 type State = {
-  isOffline: boolean,
+  isApplicationReady: boolean,
 };
 
 class Loader extends Component<Props, State> {
@@ -20,49 +28,84 @@ class Loader extends Component<Props, State> {
   };
 
   state = {
-    isOffline: false,
+    isApplicationReady: false,
   }
 
   componentDidMount() {
-    NetInfo.isConnected.fetch().then().done(() => {
-      NetInfo.isConnected.addEventListener('connectionChange', isConnected => this.dispatchConnected(isConnected));
-    });
+    AppService.getNetworkConnectionStatus(isConnected => this.getNetworkStatus(isConnected));
   }
 
-  dispatchConnected(isConnected) {
-    this.setState({ isOffline: isConnected });
-    this.navigate();
+  getApiStatus() {
+    AppService
+      .dispatch()
+      .then(
+        () => {
+          this.props.enableApiStatus();
+          this.navigate();
+        },
+        () => {
+          this.props.disableApiStatus();
+        },
+      )
+      .finally(() => this.setState({ isApplicationReady: true }));
+  }
+
+  getNetworkStatus(isConnected) {
+    if (isConnected) {
+      this.props.enableNetworkStatus();
+      this.getApiStatus();
+    } else {
+      this.props.disableNetworkStatus();
+      this.props.disableApiStatus();
+
+      this.setState({ isApplicationReady: true });
+    }
   }
 
   navigate() {
     const screen = this.props.logged ? 'Home' : 'AuthSignIn';
 
-    if (!this.state.isOffline) {
-      resetNavigation(screen, this.props.navigation);
-    }
+    resetNavigation(screen, this.props.navigation);
   }
 
   render() {
-    const { isOffline } = this.state;
+    const { networkStatus, apiStatus } = this.props;
+    const { isApplicationReady } = this.state;
 
     return (
       <View style={styles.loader}>
-        {!isOffline && (
+        {!isApplicationReady && (
           <ActivityIndicator
             animating
             size="large"
           />
         )}
 
-        {isOffline && (
-          <View style={styles.loaderOffline}>
-            <Text style={styles.loaderOfflineTitle}>
-              You are offline
-            </Text>
+        {isApplicationReady && (
+          <View>
+            {!networkStatus && !apiStatus && (
+              <View>
+                <Text style={styles.loaderMessage}>
+                  You are offline
+                </Text>
 
-            <Text style={styles.loaderOfflineSubtitle}>
-              Please turn on internet connection
-            </Text>
+                <Text style={styles.loaderMessageInfo}>
+                  Internet connection is required{'\n'} to run this application
+                </Text>
+              </View>
+            )}
+
+            {networkStatus && !apiStatus && (
+              <View>
+                <Text style={styles.loaderMessage}>
+                  API is down
+                </Text>
+
+                <Text style={styles.loaderMessageInfo}>
+                  We couldn&apos;t connect to API server.{'\n'} Please try again later.
+                </Text>
+              </View>
+            )}
           </View>
         )}
       </View>
@@ -70,8 +113,16 @@ class Loader extends Component<Props, State> {
   }
 }
 
-const mapDispatchToProps = () => ({});
+const mapDispatchToProps = dispatch => ({
+  enableNetworkStatus: () => dispatch(enableNetworkStatus()),
+  disableNetworkStatus: () => dispatch(disableNetworkStatus()),
+  enableApiStatus: () => dispatch(enableApiStatus()),
+  disableApiStatus: () => dispatch(disableApiStatus()),
+});
+
 const mapStateToProps = state => ({
+  networkStatus: state.app.networkStatus,
+  apiStatus: state.app.apiStatus,
   logged: state.auth.logged,
 });
 
